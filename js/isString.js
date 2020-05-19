@@ -7,5 +7,5 @@
  * @return bool
  */
 export default function(val) {
-	return typeof val === 'string';
+	return typeof val === 'string' && val !== null;
 };

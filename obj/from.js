@@ -16,10 +16,10 @@ import _isString from '../js/isString.js';
 export default function(key, val = null) {
 	var obj = {};
 	if (arguments.length === 2) {
-		if (_isString(key)) {
-			obj[key] = val;
-		} else if (_isArray(key) && _isArray(val)) {
+		if (_isArray(key) && _isArray(val)) {
 			key.forEach((k, i) => obj[k] = val[i]);
+		} else {
+			obj[key] = val;
 		}
 	}
 	return obj;
