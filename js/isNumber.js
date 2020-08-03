@@ -7,5 +7,5 @@
  * @return bool
  */
 export default function(val) {
-	return typeof val === 'number';
+	return val instanceof Number || (typeof val === 'number');
 };

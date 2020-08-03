@@ -9,12 +9,16 @@
   "homepage": "https://www.web-native.dev",
   "icon": "https://www.web-native.dev/icon.svg",
   "author": "Oxford Harrison <oxharriscreative@gmail.com>",
-  "version": "0.0.3",
+  "version": "0.5.0",
   "license": "MIT",
   "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/web-native/commons.git"
+  },
+  "funding": {
+    "type": "patreon",
+    "url": "https://patreon.com/ox_harris"
   },
   "main": "src/index.js",
   "scripts": {
