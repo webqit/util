@@ -8,21 +8,16 @@
   ],
   "homepage": "https://www.web-native.dev",
   "icon": "https://www.web-native.dev/icon.svg",
-  "author": {
-    "name": "Oxford Harrison",
-    "email": "oxharris.dev@gmail.com"
-  },
-  "version": "0.5.1",
+  "version": "0.5.2",
   "license": "MIT",
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/web-native/commons.git"
   },
-  "funding": {
-    "type": "patreon",
-    "url": "https://patreon.com/ox_harris"
+  "bugs": {
+    "url": "https://github.com/web-native/commons/issues"
   },
+  "type": "module",
   "main": "src/index.js",
   "scripts": {
     "test": "node ./tests/index.js",
@@ -33,7 +28,27 @@
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11"
   },
-  "bugs": {
-    "url": "https://github.com/web-native/commons/issues"
+  "author": "Oxford Harrison <oxharris.dev@gmail.com>",
+  "maintainers": [
+    "Oxford Harrison <oxharris.dev@gmail.com>"
+  ],
+  "contributors": [],
+  "funding": {
+    "type": "patreon",
+    "url": "https://patreon.com/ox_harris"
+  },
+  "badges": {
+    "list": [
+      "npmversion",
+      "npmdownloads",
+      "patreon"
+    ],
+    "config": {
+      "patreonUsername": "ox_harris",
+      "githubUsername": "web-native",
+      "githubRepository": "commons",
+      "githubSlug": "web-native/commons",
+      "npmPackageName": "@web-native-js/observables"
+    }
   }
 }
