@@ -1,21 +1,21 @@
 {
-  "name": "@web-native-js/commons",
-  "title": "Web-Native - Commons",
-  "description": "Utility functions used accross Web-Native codes.",
+  "name": "@onephrase/commons",
+  "title": "One Phrase - Commons",
+  "description": "Utility functions used accross multiple JS libraries.",
   "keywords": [
     "stdlib",
     "util"
   ],
-  "homepage": "https://www.web-native.dev",
-  "icon": "https://www.web-native.dev/icon.svg",
-  "version": "0.5.2",
+  "homepage": "https://www.onephrase.dev",
+  "icon": "https://www.onephrase.dev/icon.svg",
+  "version": "0.5.5",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/web-native/commons.git"
+    "url": "git+https://github.com/onephrase/commons.git"
   },
   "bugs": {
-    "url": "https://github.com/web-native/commons/issues"
+    "url": "https://github.com/onephrase/commons/issues"
   },
   "type": "module",
   "main": "src/index.js",
@@ -45,10 +45,10 @@
     ],
     "config": {
       "patreonUsername": "ox_harris",
-      "githubUsername": "web-native",
+      "githubUsername": "onephrase",
       "githubRepository": "commons",
-      "githubSlug": "web-native/commons",
-      "npmPackageName": "@web-native-js/observables"
+      "githubSlug": "onephrase/commons",
+      "npmPackageName": "@onephrase/commons"
     }
   }
 }
