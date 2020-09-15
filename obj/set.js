@@ -45,7 +45,7 @@ export default function(obj, path, val, buildTree = {}, trap = {}) {
 				if (trap.buildTree === false) {
 					return false;
 				}
-				branch = _isFunction(trap.buildTree) ? trap.buildTree(i) : (_isNumeric(path[i]) ? [] : {});
+				branch = _isFunction(trap.buildTree) ? trap.buildTree(i) : (_isNumeric(path[i + 1]) ? [] : {});
 				var branchSuccess = _set(target, path[i], branch);
 				if (!branchSuccess) {
 					return false;
