@@ -3,8 +3,8 @@
  * @imports
  */
 import _isTypeObject from '../js/isTypeObject.js';
-import _isTypeNumber from '../js/isTypeNumber.js';
 import _isFunction from '../js/isFunction.js';
+import _isNumeric from '../js/isNumeric.js';
 import _isArray from '../js/isArray.js';
 import _arrFrom from '../arr/from.js';
 import _get from './get.js';
@@ -25,7 +25,7 @@ export default function(obj, path, val, buildTree = {}, trap = {}) {
 		if (trap.set) {
 			return trap.set(target, key, val);
 		} else {
-			if (_isTypeNumber(path[i]) && _isArray(target)) {
+			if (_isNumeric(path[i]) && _isArray(target)) {
 				target.push(val);
 			} else {
 				target[key] = val;
@@ -45,7 +45,7 @@ export default function(obj, path, val, buildTree = {}, trap = {}) {
 				if (trap.buildTree === false) {
 					return false;
 				}
-				branch = _isFunction(trap.buildTree) ? trap.buildTree(i) : (_isTypeNumber(path[i]) ? [] : {});
+				branch = _isFunction(trap.buildTree) ? trap.buildTree(i) : (_isNumeric(path[i]) ? [] : {});
 				var branchSuccess = _set(target, path[i], branch);
 				if (!branchSuccess) {
 					return false;
