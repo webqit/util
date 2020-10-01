@@ -1,21 +1,18 @@
 
-/**
- * @imports
- */
-import ENV from './ENV.js';
-
 // ------------------
 // ready
 // ------------------
-var readyCallbacks = [];
-export default function(callback) {
-    if (ENV.window.document.readyState === 'complete') {
+export default function(window, callback) {
+	if (!window.__readyCallbacks) {
+		window.__readyCallbacks = [];
+	}
+    if (window.document.readyState === 'complete') {
 		callback();
     } else {
-		readyCallbacks.push(callback);
+		window.__readyCallbacks.push(callback);
 	}
-    ENV.window.document.addEventListener('DOMContentLoaded', () => {
-		readyCallbacks.forEach(callback => callback());
-		readyCallbacks.splice(0);
+    window.document.addEventListener('DOMContentLoaded', () => {
+		window.__readyCallbacks.forEach(callback => callback());
+		window.__readyCallbacks.splice(0);
 	}, false);
 };

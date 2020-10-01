@@ -138,7 +138,10 @@ export default class Lexer {
 			matchesi: {},
 		};
 		// Iterate over each character, keep track of current row and column (of the returned array)
-		this._evalCharsAt(runtime, 0);
+		var cursor = 0;
+		while(typeof cursor === 'number') {
+			cursor = this._evalCharsAt(runtime, cursor);
+		}
 		if (runtime.nesting.length) {
 			throw new Error('Error parsing the string: ' + this.$str + '. Unterminated blocks: ' + _flatten(runtime.nesting).join(', ') + '');
 		}
@@ -184,7 +187,7 @@ export default class Lexer {
 			this._push(runtime, this.$str[i]);
 		} else if (runtime.options.limit && runtime.matches.length === runtime.options.limit) {
 			this._push(runtime, this.$str[i]);
-			return this._evalCharsAt(runtime, i + 1);
+			return i + 1;
 		} else {
 			// Nesting tags inside comments and quotes have been ignored
 			nestingTest = this._testNesting(runtime, i);
@@ -231,7 +234,7 @@ export default class Lexer {
 						if (!runtime.options.preserveDelims) {
 							// The current character is a delimiter...
 							// and should not get to appending to the split series down the line
-							return this._evalCharsAt(runtime, i + (matchedDelim.length || 1));
+							return i + (matchedDelim.length || 1);
 						}
 					}
 					this._push(runtime, matchedDelim || this.$str[i]);
@@ -242,7 +245,7 @@ export default class Lexer {
 				}
 			}
 		}
-		return this._evalCharsAt(runtime, i + charWidth);
+		return i + charWidth;
 	}
 
 	/**
@@ -381,8 +384,8 @@ export default class Lexer {
 			runtime.tokens[splitSeries].comments[splitSeries2] = (runtime.tokens[splitSeries].comments[splitSeries2] || '') + chars;
 		} else {
 			var comments = runtime.tokens[splitSeries].comments;
-			runtime.tokens[splitSeries] = new String(runtime.tokens[splitSeries] + chars);
-			runtime.tokens[splitSeries].comments = comments;
+			runtime.tokens[splitSeries] = runtime.tokens[splitSeries] + chars;
+			//runtime.tokens[splitSeries].comments = comments;
 		}
 	}
 

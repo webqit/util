@@ -1,15 +1,10 @@
 
 /**
- * @imports
- */
-import ENV from './ENV.js';
-
-/**
  * Applies all supported polyfills
  */
-export default function() {
-    CSS_escape();
-    Element_matches();
+export default function(window) {
+    CSS_escape(window);
+    Element_matches(window);
 };
 
 /**
@@ -17,11 +12,11 @@ export default function() {
  *  
  * @return void
  */
-export function CSS_escape(str) {
-    if (!ENV.window.CSS) {
-        ENV.window.CSS = {};
+export function CSS_escape(window) {
+    if (!window.CSS) {
+        window.CSS = {};
     }
-    if (!ENV.window.CSS.escape) {
+    if (!window.CSS.escape) {
         /**
          * Polyfills the window.CSS.escape() function.
          *  
@@ -29,7 +24,7 @@ export function CSS_escape(str) {
          * 
          * @return string
          */
-        ENV.window.CSS.escape = str => str.replace(/([\:@\~\$\&])/g, '\\$1');
+        window.CSS.escape = str => str.replace(/([\:@\~\$\&])/g, '\\$1');
     }
 };
 
@@ -38,14 +33,14 @@ export function CSS_escape(str) {
   *  
  * @return void
 */
-export function Element_matches() {
-    if (!ENV.window.Element.prototype.matches) {
-        ENV.window.Element.prototype.matches = 
-        ENV.window.Element.prototype.matchesSelector || 
-        ENV.window.Element.prototype.mozMatchesSelector ||
-        ENV.window.Element.prototype.msMatchesSelector || 
-        ENV.window.Element.prototype.oMatchesSelector || 
-        ENV.window.Element.prototype.webkitMatchesSelector ||
+export function Element_matches(window) {
+    if (!window.Element.prototype.matches) {
+        window.Element.prototype.matches = 
+        window.Element.prototype.matchesSelector || 
+        window.Element.prototype.mozMatchesSelector ||
+        window.Element.prototype.msMatchesSelector || 
+        window.Element.prototype.oMatchesSelector || 
+        window.Element.prototype.webkitMatchesSelector ||
         function(s) {
             var matches = (this.document || this.ownerDocument).querySelectorAll(s),
                 i = matches.length;
@@ -59,13 +54,15 @@ export function Element_matches() {
  * Queries a DOM context for elements matching
  * the given selector.
  *
+ * @param window 				window
  * @param string 				selector
  * @param document|Element	    context
  * @param bool		 			all
  *
  * @return Element|DOMNodeList
  */
-export function querySelector(selector, context = ENV.window.document, all = false) {
+export function querySelector(window, selector, context = null, all = false) {
+    context = context || window.document;
 	var matchedItems, method = all ? 'querySelectorAll' : 'querySelector';
 	try {
 		matchedItems = context[method](selector);
@@ -96,6 +93,6 @@ export function querySelector(selector, context = ENV.window.document, all = fal
  *
  * @return DOMNodeList
  */
-export function querySelectorAll(selector, context = ENV.window.document) {
+export function querySelectorAll(window, selector, context = window.document) {
     return querySelector(selector, context, true);
 };

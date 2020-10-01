@@ -6,7 +6,6 @@ import _isString from '../js/isString.js';
 import _difference from '../arr/difference.js';
 import _arrFrom from '../arr/from.js';
 import ready from './ready.js';
-import ENV from './ENV.js';
 
 /**
  * ---------------------
@@ -20,16 +19,17 @@ import ENV from './ENV.js';
  * Observes when the given elements or selectors are added
  * to the given context.
  *
+ * @param window					window
  * @param array|Element|string		els
  * @param function					callback
  * @param object					params
  *
  * @return MutationObserver
  */
-export function onAdded(els, callback, params = {}) {
+export function onAdded(window, els, callback, params = {}) {
 	params.on = 'added';
-	return onPresenceChange(els, (el) => {
-		callback(el);
+	return onPresenceChange(window, els, (el, presence) => {
+		callback(el, presence);
 	}, params);
 };
 
@@ -39,16 +39,17 @@ export function onAdded(els, callback, params = {}) {
  * Observes when the given elements or selectors are removed
  * from the given context.
  *
+ * @param window					window
  * @param array|Element|string		els
  * @param function					callback
  * @param object					params
  *
  * @return MutationObserver
  */
-export function onRemoved(els, callback, params = {}) {
+export function onRemoved(window, els, callback, params = {}) {
 	params.on = 'removed';
-	return onPresenceChange(els, (el) => {
-		callback(el);
+	return onPresenceChange(window, els, (el, presence) => {
+		callback(el, presence);
 	}, params);
 };
 
@@ -56,25 +57,26 @@ export function onRemoved(els, callback, params = {}) {
  * Creates a MutationObserver that fires if currently, and whenever,
  * the given element, or selector, is present in the DOM.
  *
+ * @param window						window
  * @param string|Element				selector
  * @param function						callback
  * @param object						params
  *
  * @return void
  */
-export function onPresent(selector, callback, params = {}) {
+export function onPresent(window, selector, callback, params = {}) {
 	// On DOM-ready
-	ready(() => {
+	ready(window, () => {
 		// On DOM mutation
-		if (ENV.window.MutationObserver) {
-			onAdded(selector, (els, presence) => {
+		if (window.MutationObserver) {
+			onAdded(window, selector, (els, presence) => {
 				els.forEach(el => callback(el, presence));
 			}, params);
 		}
 		if (_isString(selector)) {
 			// IMPORTANT: This must come after having observed mutations above
 			// as the callback handler may trigger more additions
-			_arrFrom(ENV.window.document.querySelectorAll(selector)).forEach(el => callback(el, 1));
+			_arrFrom(window.document.querySelectorAll(selector)).forEach(el => callback(el, 1));
 		} else if (selector.parentNode) {
 			callback(selector, 1);
 		}
@@ -85,25 +87,26 @@ export function onPresent(selector, callback, params = {}) {
  * Creates a MutationObserver that fires if currently, and whenever,
  * the given element, or selector, is absent in the DOM.
  *
+ * @param window						window
  * @param string|Element				selector
  * @param function						callback
  * @param object						params
  *
  * @return void
  */
-export function onAbsent(selector, callback, params = {}) {
+export function onAbsent(window, selector, callback, params = {}) {
 	// On DOM-ready
-	ready(() => {
+	ready(window, () => {
 		// On DOM mutation
-		if (ENV.window.MutationObserver) {
-			onRemoved(selector, (els, presence) => {
+		if (window.MutationObserver) {
+			onRemoved(window, selector, (els, presence) => {
 				els.forEach(el => callback(el, presence));
 			}, params);
 		}
 		if (_isString(selector)) {
 			// IMPORTANT: This must come after having observed mutations above
 			// as the callback handler may trigger more removals
-			if (_arrFrom(ENV.window.document.querySelectorAll(selector)).length === 0) {
+			if (_arrFrom(window.document.querySelectorAll(selector)).length === 0) {
 				callback(null, 0);
 			}
 		} else if (!selector.parentNode) {
@@ -116,13 +119,14 @@ export function onAbsent(selector, callback, params = {}) {
  * Observes when the given elements or selectors are added or removed
  * from the given context.
  *
-	* @param array|Element|string	els
-	* @param function				callback
-	* @param object					params
+ * @param window					window
+ * @param array|Element|string		els
+ * @param function					callback
+ * @param object					params
  *
  * @return MutationObserver
  */
-export function onPresenceChange(els, callback, params = {}) {
+export function onPresenceChange(window, els, callback, params = {}) {
 	els = _arrFrom(els, false/*castObject*/);
 	var search = (el, nodeListArray) => {
 		// Filter out text nodes
@@ -155,8 +159,8 @@ export function onPresenceChange(els, callback, params = {}) {
 		}
 	};
 	var added = [], removed = [];
-	var subject = params.context || ENV.window.document.documentElement;
-	var mo = new ENV.window.MutationObserver(mutations => {
+	var subject = params.context || window.document.documentElement;
+	var mo = new window.MutationObserver(mutations => {
 		if (!params.on || params.on === 'added') {
 			var matchedAddedNodes = [];
 			els.forEach(el => {
@@ -229,14 +233,15 @@ export function onPresenceChange(els, callback, params = {}) {
 /**
  * Observes changes in attributes of the given element.
  *
+ * @param window					window
  * @param Element					el
  * @param function					callback
  * @param array						filter
  *
  * @return MutationObserver
  */
-export function onAttrChange(el, callback, filter = []) {
-	var observer = new ENV.window.MutationObserver(callback);
+export function onAttrChange(window, el, callback, filter = []) {
+	var observer = new window.MutationObserver(callback);
 	var params = {attributes:true, attributeOldValue:true};
 	if (filter) {
 		params.attributeFilter = filter;
@@ -248,14 +253,15 @@ export function onAttrChange(el, callback, filter = []) {
 /**
  * Observes changes in tree/subtree of the given element.
  *
+ * @param window					window
  * @param Element					el
  * @param function					callback
  * @param bool						subtree
  *
  * @return MutationObserver
  */
-export function onTreeChange(el, callback, subtree = false) {
-	var observer = new ENV.window.MutationObserver(callback);
+export function onTreeChange(window, el, callback, subtree = false) {
+	var observer = new window.MutationObserver(callback);
 	var params = {childList:true, subtree};
 	observer.observe(el, params);
 	return observer;
@@ -264,14 +270,15 @@ export function onTreeChange(el, callback, subtree = false) {
 /**
  * Observes mutations on the given element.
  *
+ * @param window					window
  * @param Element					el
  * @param function					callback
  * @param object					params
  *
  * @return MutationObserver
  */
-export function onMutation(el, callback, params) {
-	var observer = new ENV.window.MutationObserver(callback);
+export function onMutation(window, el, callback, params) {
+	var observer = new window.MutationObserver(callback);
 	observer.observe(el, params);
 	return observer;
 };

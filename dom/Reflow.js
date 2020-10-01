@@ -3,7 +3,6 @@
  * @imports
  */
 import _each from '../obj/each.js';
-import ENV from './ENV.js';
 
 /**
  * ---------------------------
@@ -12,42 +11,34 @@ import ENV from './ENV.js';
  * ---------------------------
  */
 			
-const Reflow = {
-	
-	/**
-	 * Holds all callbacks bound to the "read" phase.
-	 *
-	 * @var array
-	 */
-	readCallbacks: [],
-	
-	/**
-	 * Holds all callbacks bound to the "write" phase.
-	 *
-	 * @var array
-	 */
-	writeCallbacks: [],
+export default class Reflow {
 
 	/**
 	 * Starts the loop.
 	 *
 	 * @return this
 	 */
-	_run: function() {
-		ENV.window.requestAnimationFrame(() => {
-			Reflow.readCallbacks.forEach((callback, i) => {
+	constructor(window) {
+		this.window = window;
+		this.readCallbacks = [];
+		this.writeCallbacks = [];
+	}
+
+	_run() {
+		this.window.requestAnimationFrame(() => {
+			this.readCallbacks.forEach((callback, i) => {
 				if (callback && !callback()) {
-					Reflow.readCallbacks[i] = null;
+					this.readCallbacks[i] = null;
 				}
 			});
-			Reflow.writeCallbacks.forEach((callback, i) => {
+			this.writeCallbacks.forEach((callback, i) => {
 				if (callback && !callback()) {
-					Reflow.writeCallbacks[i] = null;
+					this.writeCallbacks[i] = null;
 				}
 			});
-			Reflow._run();
+			this._run();
 		});
-	},
+	}
 	
 	/**
 	 * Binds a callback to the "read" phase.
@@ -57,24 +48,24 @@ const Reflow = {
 	 *
 	 * @return void
 	 */
-	onread: function(callback, withPromise = false) {
+	onread(callback, withPromise = false) {
 		if (withPromise) {
 			return new Promise((resolve, reject) => {
-				if (ENV.reflow === false) {
+				if (this.active === false) {
 					callback(resolve, reject);
 				} else {
-					Reflow.readCallbacks.push(() => {
+					this.readCallbacks.push(() => {
 						callback(resolve, reject);
 					});
 				}
 			});
 		}
-		if (ENV.reflow === false) {
+		if (this.active === false) {
 			callback();
 		} else {
-			Reflow.readCallbacks.push(callback);
+			this.readCallbacks.push(callback);
 		}
-	},
+	}
 	
 	/**
 	 * Binds a callback to the "write" phase.
@@ -84,24 +75,24 @@ const Reflow = {
 	 *
 	 * @return void
 	 */
-	onwrite: function(callback, withPromise = false) {
+	onwrite(callback, withPromise = false) {
 		if (withPromise) {
 			return new Promise((resolve, reject) => {
-				if (ENV.reflow === false) {
+				if (this.active === false) {
 					callback(resolve, reject);
 				} else {
-					Reflow.writeCallbacks.push(() => {
+					this.writeCallbacks.push(() => {
 						callback(resolve, reject);
 					});
 				}
 			});
 		}
-		if (ENV.reflow === false) {
+		if (this.active === false) {
 			callback();
 		} else {
-			Reflow.writeCallbacks.push(callback);
+			this.writeCallbacks.push(callback);
 		}
-	},
+	}
 	
 	/**
 	 * A special construct for DOM manipulations that span
@@ -113,24 +104,24 @@ const Reflow = {
 	 *
 	 * @return void|mixed
 	 */
-	cycle: function(read, write, prevTransaction) {
-		Reflow.onread(() => {
+	cycle(read, write, prevTransaction) {
+		this.onread(() => {
 			// Record initial values
 			var readReturn = read(prevTransaction);
 			if (readReturn) {
 				// Call erite, the transation
 				var callWrite = (readReturn) => {
-					Reflow.onwrite(() => {
+					this.onwrite(() => {
 						var writeReturn = write(readReturn, prevTransaction);
 						if (writeReturn) {
 							// Repeat transaction
 							var repeatTransaction = (writeReturn) => {
-								Reflow.cycle(read, write, writeReturn);
+								this.cycle(read, write, writeReturn);
 							};
 							// ---------------------------------------
 							// If "write" returns a promise, we wait until it is resolved
 							// ---------------------------------------
-							if (writeReturn instanceof ENV.window.Promise) {
+							if (writeReturn instanceof this.window.Promise) {
 								writeReturn.then(repeatTransaction);
 							} else {
 								repeatTransaction();
@@ -141,17 +132,13 @@ const Reflow = {
 				// ---------------------------------------
 				// If "read" returns a promise, we wait until it is resolved
 				// ---------------------------------------
-				if (readReturn instanceof ENV.window.Promise) {
+				if (readReturn instanceof this.window.Promise) {
 					readReturn.then(callWrite);
 				} else {
 					callWrite();
 				}
 			}
 		});
-	},
-};
+	}
 
-/**
- * @exports
- */
-export default Reflow;
+};

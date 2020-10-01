@@ -1,41 +1,38 @@
 
 /**
- * @imports
- */
-import ENV from './ENV.js';
-
-/**
- * Detects vendor type from the given ENV.window object
+ * Detects vendor type from the given window object
  * 
+ * @param window    window
+ *
  * @return string
  */
-export function detect() {
-    if (!ENV.window) {
+export function detect(window) {
+    if (!window) {
         return '';
     }
     // Firefox 1.0+
-    var isFirefox = typeof ENV.window.InstallTrigger !== 'undefined';
+    var isFirefox = typeof window.InstallTrigger !== 'undefined';
     if (isFirefox) {
         return 'firefox';
     }
     // Safari 3.0+ "[object HTMLElementConstructor]" 
-    var isSafari = /constructor/i.test(ENV.window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!ENV.window['safari'] || (typeof ENV.window.safari !== 'undefined' && ENV.window.safari.pushNotification));
+    var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof window.safari !== 'undefined' && window.safari.pushNotification));
     if (isSafari) {
         return 'safari';
     }
     // Chrome 1 - 79
-    var isChrome = !!ENV.window.chrome && (!!ENV.window.chrome.webstore || !!ENV.window.chrome.runtime);
+    var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
     // Edge (based on chromium) detection
-    var isEdgeChromium = isChrome && (ENV.window.navigator.userAgent.indexOf("Edg") != -1);
+    var isEdgeChromium = isChrome && (window.navigator.userAgent.indexOf("Edg") != -1);
     // Opera 8.0+
-    var isOpera = (!!ENV.window.opr && !!ENV.window.opr.addons) || !!ENV.window.opera || ENV.window.navigator.userAgent.indexOf(' OPR/') >= 0;
+    var isOpera = (!!window.opr && !!window.opr.addons) || !!window.opera || window.navigator.userAgent.indexOf(' OPR/') >= 0;
 
     // Internet Explorer 6-11
-    var isIE = /*@cc_on!@*/false || !!ENV.window.document.documentMode;
+    var isIE = /*@cc_on!@*/false || !!window.document.documentMode;
     // Edge 20+
-    var isEdge = !isIE && !!ENV.window.StyleMedia;
+    var isEdge = !isIE && !!window.StyleMedia;
     // Blink engine detection
-    var isBlink = (isChrome || isOpera) && !!ENV.window.CSS;
+    var isBlink = (isChrome || isOpera) && !!window.CSS;
     return isEdge ? 'edge' : (
         isIE ? 'ie' : (
             isOpera ? 'opera' : (
@@ -53,7 +50,7 @@ export function detect() {
  * @return object
  */
 export function prefix() {
-    var styles = ENV.window.getComputedStyle(ENV.window.document.documentElement, '');
+    var styles = window.getComputedStyle(window.document.documentElement, '');
     var prefix = (Array.prototype.slice.call(styles).join('').match(/-(moz|webkit|ms)-/) || styles.Olink === '' && ['', 'o'])[1];
     var api = (('WebKit|Moz|Ms|O').match(new RegExp('(' + prefix + ')', 'i')) || [])[1];
     return {
