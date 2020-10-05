@@ -7,7 +7,7 @@
     "util"
   ],
   "homepage": "https://onephrase.dev/package/util",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -47,5 +47,9 @@
       "githubSlug": "onephrase/util",
       "npmPackageName": "@onephrase/util"
     }
+  },
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "prompts": "^2.3.2"
   }
 }

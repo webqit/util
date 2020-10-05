@@ -3,8 +3,8 @@
  * @imports
  * "num" category of modules.
  */
-import _closest from '../num/closest.js';
-import _fromWords from '../num/fromWords.js';
+import _closest from './closest.js';
+import _fromWords from './fromWords.js';
 
 /**
  * @exports
