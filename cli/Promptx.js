@@ -26,33 +26,49 @@ const promptsSubmitExtension = async function(prompt, ans, answers) {
         }
 
         if (prompt.prompts.multiple) {
-            answers[prompt.name] = [];
+            answers[prompt.name] = prompt.prompts.combomode ? {} : [];
 
             if (ans) {
+                var initials = prompt.prompts.initial || {};
+                var initialsKeys = Object.keys(initials);
                 const runPromts = async index => {
-                    var _subQuestions = subQuestions;
-                    if (prompt.prompts.initial && prompt.prompts.initial[index]) {
-                        _subQuestions = withInitials(subQuestions, prompt.prompts.initial[index]);
+                    var _subQuestions = subQuestions, success;
+                    if (initialsKeys[index]) {
+                        if (prompt.prompts.combomode) {
+                            _subQuestions = withInitials(subQuestions, [initialsKeys[index], initials[initialsKeys[index]]]);
+                        } else {
+                            _subQuestions = withInitials(subQuestions, initials[initialsKeys[index]]);
+                        }
                     }
-                    answers[prompt.name].push(await Promptx(_subQuestions));
+                    var subAnswers = await Promptx(_subQuestions);
+                    if (prompt.prompts.combomode) {
+                        if (subAnswers.name) {
+                            answers[prompt.name][subAnswers.name] = subAnswers.value;
+                            success = true;
+                        }
+                    } else {
+                        answers[prompt.name].push(subAnswers);
+                        success = true;
+                    }
                     let add = {
                         name: 'add', 
                         type: 'toggle', 
                         message: (' '.repeat(indentation)) + (typeof prompt.prompts.multiple === 'string' ? prompt.prompts.multiple : 'Add new?'), 
                         active: 'YES',
                         inactive: 'NO',
+                        initial: initialsKeys[index + 1],
                         onRender(kleur) {
                             this.msg = kleur.green(this.msg);
                         },
                     }
-                    if ((await Prompts(add)).add) {
+                    if (success && (await Prompts(add)).add) {
                         await runPromts(index + 1);
                     }
                 };
                 await runPromts(0);
             }
 
-        } else {
+         } else {
 
             var _subQuestions = subQuestions;
             if (prompt.prompts.initial) {
@@ -76,10 +92,9 @@ const withInitials = (questions, initials) => {
             if (!('initial' in _question.prompts) && (key in initials)) {
                 _question.prompts.initial = initials[key];
             }
-        } else {
-            _question.initial = (...args) => key in initials ? initials[key] 
-                : (_isFunction(_question.initial) ? _question.initial(...args) : _question.initial);
         }
+        _question.initial = (...args) => key in initials ? initials[key] 
+            : (_isFunction(_question.initial) ? _question.initial(...args) : _question.initial);
         return _question;
     });
 };
