@@ -17,7 +17,7 @@ import _getAllPropertyNames from './getAllPropertyNames.js';
   *
   * @return void
   */
-export default function mergeCallback(objs, callback, deepProps = false, isReplace = false, withSymbols = true) {
+export default function mergeCallback(objs, callback, deepProps = false, isReplace = false, withSymbols = false) {
 	var depth = 0;
 	var obj1 = objs.shift();
 	if (_isNumeric(obj1) || obj1 === true || obj1 === false) {
@@ -32,6 +32,9 @@ export default function mergeCallback(objs, callback, deepProps = false, isRepla
 			return;
 		}
 		(deepProps ? _getAllPropertyNames(obj2) : Object.getOwnPropertyNames(obj2)).forEach(key => {
+			if (!callback(key, obj1, obj2, i)) {
+				return;
+			}
 			var valAtObj1 = obj1[key];
 			var valAtObj2 = obj2[key];
 			if (((_isArray(valAtObj1) && _isArray(valAtObj2)) || (_isObject(valAtObj1) && _isObject(valAtObj2))) 
@@ -39,7 +42,7 @@ export default function mergeCallback(objs, callback, deepProps = false, isRepla
 				// RECURSE...
 				obj1[key] = _isArray(valAtObj1) && _isArray(valAtObj2) ? [] : {};
 				mergeCallback([_isNumeric(depth) ? depth - 1 : depth, obj1[key], valAtObj1, valAtObj2], callback, deepProps, isReplace, withSymbols);
-			} else if (callback(key, obj1, obj2, i)) {
+			} else {
 				if (_isArray(obj1) && _isArray(obj2)) {
 					if (isReplace) {
 						obj1[key] = valAtObj2;

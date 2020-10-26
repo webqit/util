@@ -39,9 +39,11 @@ export default function(...classes) {
 	// Extend (merge) properties but keep methods
 	classes.forEach(_class => {
 		// Copy const members
-		_mergeCallback([Mixin, _class], (key, obj1, obj2) => ['name', 'prototype', 'prototypes', 'length'].indexOf(key) === -1);
+		_mergeCallback([Mixin, _class], (key, obj1, obj2) => ![
+			'name', 'prototype', 'prototypes', 'length', 'caller', 'callee', 'arguments', 'constructor', 'apply', "bind", 'call', 'toString',/**/
+		].includes(key), true/*deepProps*/);
 		_mergeCallback([Mixin.prototype, _class.prototype], (key, obj1, obj2) => {
-			if (['prototype', 'prototypes'].indexOf(key) === -1) {
+			if (!['prototype', 'prototypes'].includes(key)) {
 				if (_isFunction(obj2[key])) {
 					if (_isArray(supersMap[key])) {
 						supersMap[key].push(obj2[key]);

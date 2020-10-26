@@ -234,7 +234,13 @@ export default class Lexer {
 						if (!runtime.options.preserveDelims) {
 							// The current character is a delimiter...
 							// and should not get to appending to the split series down the line
-							return i + (matchedDelim.length || 1);
+							var nextIndex = i + (matchedDelim.length || 1);
+							if (nextIndex === this.$str.length) {
+								// In case the chars at last index is a delim,
+								// the resulting split should last have an empty string
+								this._push(runtime, '');
+							}
+							return nextIndex;
 						}
 					}
 					this._push(runtime, matchedDelim || this.$str[i]);
