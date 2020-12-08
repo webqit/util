@@ -1,20 +1,20 @@
 {
-  "name": "@onephrase/util",
+  "name": "@webqit/util",
   "title": "Util",
   "description": "Utility functions used accross multiple JS libraries.",
   "keywords": [
     "stdlib",
     "util"
   ],
-  "homepage": "https://onephrase.dev/package/util",
-  "version": "0.6.3",
+  "homepage": "https://webqit.dev/tooling/util",
+  "version": "0.7.0",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/onephrase/util.git"
+    "url": "git+https://github.com/webqit/util.git"
   },
   "bugs": {
-    "url": "https://github.com/onephrase/util/issues"
+    "url": "https://github.com/webqit/util/issues"
   },
   "type": "module",
   "main": "src/index.js",
@@ -42,14 +42,10 @@
     ],
     "config": {
       "patreonUsername": "ox_harris",
-      "githubUsername": "onephrase",
+      "githubUsername": "webqit",
       "githubRepository": "util",
-      "githubSlug": "onephrase/util",
-      "npmPackageName": "@onephrase/util"
+      "githubSlug": "webqit/util",
+      "npmPackageName": "@webqit/util"
     }
-  },
-  "dependencies": {
-    "chalk": "^4.1.0",
-    "prompts": "^2.3.2"
   }
 }

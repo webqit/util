@@ -15,7 +15,7 @@ import _each from '../obj/each.js';
  *
  * @return object
  */
-export default function(...classes) {
+export default function mixin(...classes) {
 	
 	var Traps = {};
 	var RetrnDirective = 'last';
@@ -26,17 +26,44 @@ export default function(...classes) {
 			RetrnDirective = arguments[2];
 		}
 	}
+	// -----------------------
 	var Base = _arrLast(classes);
 	var supersMap = {};
-	var Mixin = class extends Base {
+	// -----------------------
+	// Create the Mixin
+	// ...with a special constructor.
+	// -----------------------
+	var Mixin = class {
 		constructor(...args) {
-			super(...args);
+			classes.forEach((_class, i) => {
+				Reflect.construct(_class, args, this.constructor);
+			});
 		}
 	};
-	// A trap for _instanceof()
-	Mixin.prototypes = classes;
+	// -----------------------
+	// Implement a special handler of the "instanceof" operator.
+	// -----------------------
+	var opSubclassesSymbolKey = Symbol.for('onephrase/util/mixin');
+	classes.forEach((_class, i) => {
+		if (!_class[opSubclassesSymbolKey]) {
+			Object.defineProperty(_class, opSubclassesSymbolKey, {value: []});
+			try {
+				var originalInstanceChecker = _class[Symbol.hasInstance].bind(_class);
+				Object.defineProperty(_class, Symbol.hasInstance, {value: function(instance) {
+					if (originalInstanceChecker(instance)) {
+						return true;
+					}
+					return _class[opSubclassesSymbolKey].reduce((yes, _mixin) => yes || (instance instanceof _mixin), false);
+				}});
+			} catch (e) {
+				throw new Error('Cannot mixin the class at index ' + i + '. Class may already have been configured for instance checks somewhere.');
+			}
+		}
+		_class[opSubclassesSymbolKey].push(Mixin);
+	});
 	// ---------------------
-	// Extend (merge) properties but keep methods
+	// Mixin both static and instance properties and methods
+	// ---------------------
 	classes.forEach(_class => {
 		// Copy const members
 		_mergeCallback([Mixin, _class], (key, obj1, obj2) => ![
