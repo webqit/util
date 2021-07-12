@@ -8,7 +8,7 @@
  * 
  * @returns Bool
  */
-export default function equals(a, b, dotSafe = false) {
+export default function equals(a, b, dotSafe = null) {
 	return dotSafe || (dotSafe !== false && a.dotSafe && b.dotSafe) 
 		? a.join('.') === b.join('.') 
 		: a.length === b.length && a.reduce((prev, value, i) => prev && value === b[i], true);
