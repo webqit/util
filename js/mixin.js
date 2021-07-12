@@ -15,6 +15,7 @@ import _each from '../obj/each.js';
  *
  * @return object
  */
+const Implementations = new Map;
 export default function mixin(...classes) {
 	
 	var Traps = {};
@@ -43,23 +44,25 @@ export default function mixin(...classes) {
 	// -----------------------
 	// Implement a special handler of the "instanceof" operator.
 	// -----------------------
-	var opSubclassesSymbolKey = Symbol.for('onephrase/util/mixin');
 	classes.forEach((_class, i) => {
-		if (!_class[opSubclassesSymbolKey]) {
-			Object.defineProperty(_class, opSubclassesSymbolKey, {value: []});
+		if (!Implementations.has(_class)) {
+			Implementations.set(_class, []);
 			try {
-				var originalInstanceChecker = _class[Symbol.hasInstance].bind(_class);
+				var originalInstanceChecker = _class[Symbol.hasInstance];
 				Object.defineProperty(_class, Symbol.hasInstance, {value: function(instance) {
-					if (originalInstanceChecker(instance)) {
+					if (originalInstanceChecker.call(this, instance)) {
 						return true;
 					}
-					return _class[opSubclassesSymbolKey].reduce((yes, _mixin) => yes || (instance instanceof _mixin), false);
+					if (Implementations.has(this)) {
+						return Implementations.get(this).reduce((yes, _mixin) => yes || (instance instanceof _mixin), false);
+					}
+					return false;
 				}});
 			} catch (e) {
 				throw new Error('Cannot mixin the class at index ' + i + '. Class may already have been configured for instance checks somewhere.');
 			}
 		}
-		_class[opSubclassesSymbolKey].push(Mixin);
+		Implementations.get(_class).push(Mixin);
 	});
 	// ---------------------
 	// Mixin both static and instance properties and methods
