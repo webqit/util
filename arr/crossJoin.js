@@ -5,7 +5,20 @@
 import _arrFrom from './from.js';
 
 /**
- * Accepts a list of column and joins them to a table.
+ * Accepts an array where each entry is a segment of a path
+ * (where each segment may be a compound segment (multiple possible values)),
+ * returns an array of paths with compound segments exploded.
+ * 
+ * ['a', 'b', 'c'] 					=> 	[ ['a', 'b', 'c'] ]
+ * [ ['a'], 'b', ['c1', 'c2'] ] 	=> 	[
+ * 											['a', 'b', 'c1']
+ * 											['a', 'b', 'c2']
+ * 										]
+ * [ ['a'], 'b', ['c1', 'c2', 'c3] ]=> 	[
+ * 											['a', 'b', 'c1']
+ * 											['a', 'b', 'c2']
+ * 											['a', 'b', 'c3']
+ * 										]
  *
  * @param array 	arr
  *
