@@ -6,6 +6,7 @@ import _getProxyTarget from './getProxyTarget.js';
 import _getProxyTrap from './getProxyTrap.js';
 import _getType from './getType.js';
 import _instanceof from './instanceof.js';
+import _internals from './internals.js';
 import _isArray from './isArray.js';
 import _isBoolean from './isBoolean.js';
 import _isClass from './isClass.js';
@@ -35,6 +36,7 @@ export {
 	_getProxyTrap,
 	_getType,
 	_instanceof,
+	_internals,
 	_isArray,
 	_isBoolean,
 	_isClass,

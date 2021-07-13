@@ -61,4 +61,17 @@ describe(`JS Processing`, function() {
 
     });
 
+    describe(`internals()`, function() {
+ 
+        it(`Should ensure zero or more namespaces work.`, function() {
+            var obj = {};
+            expect(Js._internals(obj)).to.be.instanceOf(Map);
+            expect(Js._internals(obj, 'a', 'b')).to.be.instanceOf(Map);
+            expect(Js._internals(obj, 'a', 'c')).to.be.instanceOf(Map);
+            expect(Js._internals(obj, 'a').size).to.eq(2);
+            expect(Js._internals(obj).size).to.eq(1);
+        });
+
+    });
+
 });
