@@ -68,6 +68,8 @@ describe(`JS Processing`, function() {
             expect(Js._internals(obj)).to.be.instanceOf(Map);
             expect(Js._internals(obj, 'a', 'b')).to.be.instanceOf(Map);
             expect(Js._internals(obj, 'a', 'c')).to.be.instanceOf(Map);
+            expect(Js._internals(obj, 'a', 'd', false)).to.be.instanceOf(Map); // FALSE means: Return orphan Map if not exists
+            expect(Js._internals(obj, 'a', 'e', false)).to.be.instanceOf(Map); // FALSE means: Return orphan Map if not exists
             expect(Js._internals(obj, 'a').size).to.eq(2);
             expect(Js._internals(obj).size).to.eq(1);
         });
