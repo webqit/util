@@ -7,16 +7,18 @@
  * 
  * @return Object
  */
-const InternalsRegistry = new Map;
 export default function internals(obj, ...namespaces) {
-    var itnls = InternalsRegistry.get(obj);
+    if (!globalThis.WebQitInternalsRegistry) {
+        globalThis.WebQitInternalsRegistry = new Map;
+    }
+    var itnls = globalThis.WebQitInternalsRegistry.get(obj);
     if (!itnls) {
         itnls = new Map;
         if (namespaces[0] === false) {
             // FALSE means: Return orphan Map if not exists
             return itnls;
         }
-        InternalsRegistry.set(obj, itnls);
+        globalThis.WebQitInternalsRegistry.set(obj, itnls);
     }
     var _ns, _itnls;
     while ((_ns = namespaces.shift())) {

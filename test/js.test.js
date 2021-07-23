@@ -76,4 +76,93 @@ describe(`JS Processing`, function() {
 
     });
 
+
+    /**
+
+    Object.prototype.toString.call({});
+
+    const obj = {
+        [Symbol.toPrimitive](hint) {
+            switch (hint) {
+                case 'number':
+                    return 123;
+                case 'string':
+                    return 'str';
+                case 'default':
+                    return 'default';
+                default:
+                    throw new Error();
+            }
+        }
+    };
+    console.log(2 * obj); // 246
+    console.log(3 + obj); // '3default'
+    console.log(obj == 'default'); // true
+    console.log(String(obj)); // 'str'
+
+    class Bar {
+        get [Symbol.toStringTag]() {
+          return 'Bar';
+        }
+    }
+    console.log(new Bar().toString()); // [object Bar]
+
+    function myIndexOf(arr, elem) {
+        return arr.findIndex(x => Object.is(x, elem));
+    }
+
+    //> Object.is(NaN, NaN)
+    true
+    //> Object.is(-0, +0)
+    false
+
+    //If you want the clone to have the same prototype as the original, you can use Object.getPrototypeOf() and Object.create():
+
+    function clone(orig) {
+        const origProto = Object.getPrototypeOf(orig);
+        return Object.assign(Object.create(origProto), orig);
+    }
+
+    const DEFAULTS = {
+        logLevel: 0,
+        outputFormat: 'html'
+    };
+    function processContent(options) {
+        options = Object.assign({}, DEFAULTS, options); // (A)
+        //···
+    }
+    //In line A, we created a fresh object, copied the defaults into it and then copied options into it, overriding the defaults. Object.assign() returns the result of these operations, which we assign to options.
+
+
+    //This is how you would copy all own properties (not just enumerable ones), while correctly transferring getters and setters and without invoking setters on the target:
+
+    function copyAllOwnProperties(target, ...sources) {
+        for (const source of sources) {
+            for (const key of Reflect.ownKeys(source)) {
+                const desc = Object.getOwnPropertyDescriptor(source, key);
+                Object.defineProperty(target, key, desc);
+            }
+        }
+        return target;
+    }
+
+
+
+    const Storage = Sup => class extends Sup {
+        save(database) { }
+    };
+    const Validation = Sup => class extends Sup {
+        validate(schema) { }
+    };
+    //Here, we profit from the operand of the extends clause not being a fixed identifier, but an arbitrary expression. With these mixins, Employee is created like this:
+    
+    class Employee extends Storage(Validation(Person)) { }
+
+
+    get notifier() {
+    delete this.notifier;
+    return this.notifier = document.getElementById('bookmarked-notification-anchor');
+    },
+    */
+
 });
