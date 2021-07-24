@@ -474,4 +474,4 @@ Lexer.$comments = [['/*', '*/'], ['//', "\n"],];
 /**
  * @var object
  */
-Lexer.$cache = {};
+Lexer.$cache = Object.create(null);
