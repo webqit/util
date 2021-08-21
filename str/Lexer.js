@@ -346,7 +346,7 @@ export default class Lexer {
 		for (var k = 0; k < testList.length; k ++) {
 			var test = testList[k];
 			if (_isFunction(test)) {
-				var ret = test(this.$str.substr(0, i), this.$str.substr(i));
+				var ret = test(this.$str.substr(0, i), this.$str.substr(i), runtime.tokens.slice());
 				if (ret !== false) {
 					return ret;
 				}
