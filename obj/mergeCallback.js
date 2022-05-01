@@ -31,7 +31,7 @@ export default function mergeCallback(objs, callback, deepProps = false, isRepla
 		if (!_isTypeObject(obj2) && !_isFunction(obj2)) {
 			return;
 		}
-		(deepProps ? _getAllPropertyNames(obj2) : Object.getOwnPropertyNames(obj2)).forEach(key => {
+		(deepProps ? _getAllPropertyNames(obj2) : Object.keys(obj2)).forEach(key => {
 			if (!callback(key, obj1, obj2, i)) {
 				return;
 			}
