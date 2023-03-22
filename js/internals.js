@@ -16,12 +16,13 @@ export default function internals(obj, ...namespaces) {
     if (!globalThis.webqit.refs) {
         Object.defineProperty(globalThis.webqit, 'refs', {value: new ObservableMap})
     }
-    var itnls = globalThis.webqit.refs.get(obj);
+    if (!arguments.length) return globalThis.webqit.refs;
+    let itnls = globalThis.webqit.refs.get(obj);
     if (!itnls) {
         itnls = new ObservableMap;
         globalThis.webqit.refs.set(obj, itnls);
     }
-    var _ns, _itnls;
+    let _ns, _itnls;
     while ((_ns = namespaces.shift())) {
         if ((_itnls = itnls) && !(itnls = itnls.get(_ns))) {
             itnls = new ObservableMap;
