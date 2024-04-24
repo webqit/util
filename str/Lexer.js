@@ -317,15 +317,25 @@ export default class Lexer {
 	_testNesting(runtime, i) {
 		var result = {};
 		(runtime.options.blocks || []).forEach(block => {
-			var starting = _first(block);
-			if (this.$str.substr(i).startsWith(starting)) {
+			let starting = _first(block), matchedStarting;
+			if (starting instanceof RegExp) {
+				[matchedStarting] = starting.exec(this.$str.substr(i)) || [];
+			} else if (this.$str.substr(i).startsWith(starting)) {
+				matchedStarting = starting;
+			}
+			if (matchedStarting) {
 				runtime.nesting = runtime.nesting.concat([block]);
-				result.starting = starting;
+				result.starting = matchedStarting;
 			} else if (runtime.nesting.length && _last(block) === _last(_last(runtime.nesting))) {
-				var ending = _last(block);
-				if (this.$str.substr(i).startsWith(ending)) {
+				var ending = _last(block), matchedEnding;
+				if (ending instanceof RegExp) {
+					[matchedEnding] = ending.exec(this.$str.substr(i)) || [];
+				} else if (this.$str.substr(i).startsWith(ending)) {
+					matchedEnding = ending;
+				}
+				if (matchedEnding) {
 					runtime.nesting = runtime.nesting.slice(0, -1);
-					result.ending = ending;
+					result.ending = matchedEnding;
 				}
 			}
 		});
