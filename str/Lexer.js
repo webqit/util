@@ -12,6 +12,7 @@ import _last from '../arr/last.js';
 import _merge from '../obj/merge.js';
 import _even from '../obj/even.js';
 import _copyPlain from '../obj/copyPlain.js';
+import { _isObject } from '../js/index.js';
 
 /**
  * --------------------------
@@ -354,22 +355,29 @@ export default class Lexer {
 	 */
 	_testChars(testList, runtime, i) {
 		for (var k = 0; k < testList.length; k ++) {
-			var test = testList[k];
-			if (_isFunction(test)) {
-				var ret = test(this.$str.substr(0, i), this.$str.substr(i), runtime.tokens.slice());
-				if (ret !== false) {
-					return ret;
-				}
+			const testArg = {
+				useRegex: runtime.options.useRegex,
+				ci: runtime.options.ci,
+				...(_isObject(testList[k]) ? testList[k] : { test: testList[k] })
+			};
+			if (_isFunction(testArg.test)) {
+				var ret = testArg.test(this.$str.substr(0, i), this.$str.substr(i), runtime.tokens.slice());
+				if (ret !== false) return ret;
+				continue;
 			}
-			if (runtime.options.useRegex) {
-				var m = this.$str.substr(i).match(new RegExp('^' + test, runtime.options.useRegex !== true ? runtime.options.useRegex : ''));
-				if (m) {
+			if (testArg.useRegex) {
+				const regexFlags = testArg.useRegex !== true ? testArg.useRegex : '';
+				var m = this.$str.substr(i).match(new RegExp('^' + testArg.test, regexFlags));
+				if (m && (!testArg.lookback || this.$str.substr(0, i).match(new RegExp(testArg.lookback + '$', regexFlags)))) {
 					return m[0];
 				}
+				continue;
 			}
-			if ((!runtime.options.ci && this.$str.substr(i, test.length) === test)
-			|| (runtime.options.ci && this.$str.substr(i, test.length).toLowerCase() === test.toLowerCase())) {
-				return test;
+			const match = (base, text) => testArg.ci ? base.toLowerCase() === text.toLowerCase() : base === text;
+			if (match(this.$str.substr(i, testArg.test.length), testArg.test)) {
+				if (!testArg.lookback || match(this.$str.substr(i - testArg.lookback.length, i), testArg.lookback)) {
+					return testArg.test;
+				}
 			}
 		}
 		return false;
