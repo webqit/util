@@ -368,14 +368,14 @@ export default class Lexer {
 			if (testArg.useRegex) {
 				const regexFlags = testArg.useRegex !== true ? testArg.useRegex : '';
 				var m = this.$str.substr(i).match(new RegExp('^' + testArg.test, regexFlags));
-				if (m && (!testArg.lookback || this.$str.substr(0, i).match(new RegExp(testArg.lookback + '$', regexFlags)))) {
+				if (m && (!testArg.backtest || this.$str.substr(0, i).match(new RegExp(testArg.backtest, regexFlags)))) {
 					return m[0];
 				}
 				continue;
 			}
 			const match = (base, text) => testArg.ci ? base.toLowerCase() === text.toLowerCase() : base === text;
 			if (match(this.$str.substr(i, testArg.test.length), testArg.test)) {
-				if (!testArg.lookback || match(this.$str.substr(i - testArg.lookback.length, i), testArg.lookback)) {
+				if (!testArg.backtest || match(this.$str.substr(i - testArg.backtest.length, i), testArg.backtest)) {
 					return testArg.test;
 				}
 			}
