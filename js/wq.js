@@ -1,5 +1,3 @@
-import { type } from "os";
-
 export default function wq(obj, ...namespaces) {
     if (!obj || !['object', 'function'].includes(typeof obj)) {
         throw new Error(`Argument #1 must be of type object`);
