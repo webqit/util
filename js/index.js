@@ -26,6 +26,7 @@ import _isTypeObject from './isTypeObject.js';
 import _isUndefined from './isUndefined.js';
 import _mixin from './mixin.js';
 import _proxy from './proxy.js';
+import _wq from './wq.js';
 
 /**
  * @exports
@@ -56,4 +57,5 @@ export {
 	_isUndefined,
 	_mixin,
 	_proxy,
+	_wq,
 };
