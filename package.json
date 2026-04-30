@@ -6,7 +6,6 @@
     "stdlib",
     "util"
   ],
-  "homepage": "https://webqit.dev/tooling/util",
   "version": "0.8.16",
   "license": "MIT",
   "repository": {
@@ -19,41 +18,19 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha --extension .test.js --exit",
-    "test:coverage": "c8 --reporter=text-lcov npm run test | coveralls",
-    "preversion": "npm run test",
-    "postversion": "npm publish",
-    "postpublish": "git push && git push --tags"
+    "test": "mocha --extension .test.js --recursive --timeout 5000 --exit",
+    "build": "echo \"No build step required\"",
+    "preversion": "npm run test && npm run build",
+    "postversion": "git push && git push --tags",
+    "version:next": "npm version prerelease --preid=next"
   },
   "devDependencies": {
     "chai": "^4.3.4",
-    "coveralls": "^3.1.1",
-    "mocha": "^10.2.0",
-    "mocha-lcov-reporter": "^1.3.0",
-    "webpack": "^4.41.6",
-    "webpack-cli": "^3.3.11"
+    "mocha": "^10.2.0"
   },
   "author": "Oxford Harrison <oxharris.dev@gmail.com>",
   "maintainers": [
     "Oxford Harrison <oxharris.dev@gmail.com>"
   ],
-  "contributors": [],
-  "funding": {
-    "type": "patreon",
-    "url": "https://patreon.com/ox_harris"
-  },
-  "badges": {
-    "list": [
-      "npmversion",
-      "npmdownloads",
-      "patreon"
-    ],
-    "config": {
-      "patreonUsername": "ox_harris",
-      "githubUsername": "webqit",
-      "githubRepository": "util",
-      "githubSlug": "webqit/util",
-      "npmPackageName": "@webqit/util"
-    }
-  }
+  "contributors": []
 }

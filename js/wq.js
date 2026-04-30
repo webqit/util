@@ -5,13 +5,15 @@ export default function wq(obj, ...namespaces) {
     let wq = obj[Symbol.for('wq')];
     if (!wq) {
         wq = new WQInternals;
-        Object.defineProperty(obj, Symbol.for('wq'), {
-            value: wq,
-            // Defaults, but to be explicit...
-            enumerable: false,
-            configurable: false,
-            writable: false
-        });
+        if (Object.isExtensible(obj)) {
+            Object.defineProperty(obj, Symbol.for('wq'), {
+                value: wq,
+                // Defaults, but to be explicit...
+                enumerable: false,
+                configurable: false,
+                writable: false
+            });
+        }
     }
     if (!namespaces.length) {
         return wq;
@@ -26,4 +28,4 @@ export default function wq(obj, ...namespaces) {
     return wq;
 }
 
-class WQInternals extends Map {}
+class WQInternals extends Map { }
